@@ -1,0 +1,15 @@
+config/
+logs/
+plugins/
+pycache/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env
+*.db
+*.sqlite3
+
+!docker-compose.yaml
+!Dockerfile
+!dags/

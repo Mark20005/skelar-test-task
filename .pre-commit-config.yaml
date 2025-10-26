@@ -1,0 +1,66 @@
+repos:
+# --- general hooks ---
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-json
+    -   id: check-merge-conflict
+    -   id: check-added-large-files
+        name: Check for large files
+        entry: check-added-large-files
+        args: ['--maxkb=1024']
+
+# --- secret detection ---
+-   repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+    -   id: gitleaks
+        name: Detect hardcoded secrets (API keys)
+
+# --- formatter black ---
+-   repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+    -   id: black
+        name: Format Python code (Black)
+        language_version: python3.10
+
+# --- imports sorting ---
+-   repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+    -   id: isort
+        name: Sort Python imports (isort)
+        args: ["--profile", "black"]
+
+# --- linting ---
+-   repo: https://github.com/pycqa/flake8
+    rev: 7.1.0
+    hooks:
+    -   id: flake8
+        name: Lint Python code (Flake8)
+        additional_dependencies: [
+            flake8-bugbear,
+            flake8-comprehensions
+        ]
+
+# --- security linting ---
+-   repo: https://github.com/pycqa/bandit
+    rev: 1.7.9
+    hooks:
+    -   id: bandit
+        name: Check for Python security issues (Bandit)
+        exclude: ^tests/
+
+# --- SQL lint and formatting ---
+-   repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.0.7
+    hooks:
+    -   id: sqlfluff-lint
+        name: Lint SQL files (SQLFluff)
+    -   id: sqlfluff-fix
+        name: Format SQL files (SQLFluff)
+        args: [--force]

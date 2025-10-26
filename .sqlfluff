@@ -1,0 +1,4 @@
+[sqlfluff]
+dialect = bigquery
+[sqlfluff:layout:type:keyword]
+capitalisation_policy = upper
