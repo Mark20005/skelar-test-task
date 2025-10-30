@@ -36,7 +36,7 @@ except KeyError as e:
 @task(retries=5, retry_delay=timedelta(minutes=1))
 def extract(logical_date_str: str, base_currency: str) -> Dict[str, Any]:
     """
-    Extracts currency exchange rates for a specific logical date.
+    Extract currency exchange rates for a specific logical date.
 
     Args:
         logical_date_str: The date for which to fetch rates,
@@ -55,7 +55,7 @@ def extract(logical_date_str: str, base_currency: str) -> Dict[str, Any]:
     logger.info(f"Requesting data from {endpoint} for base {base_currency}...")
 
     try:
-        response = requests.get(endpoint, params=params)
+        response = requests.get(endpoint, params=params, timeout=10)
         # this will raise an HTTPError for 4xx/5xx responses
         response.raise_for_status()
         data = response.json()
@@ -73,8 +73,7 @@ def transform(
     data: Dict[str, Any], logical_date_str: str, base_currency: str
 ) -> pd.DataFrame:
     """
-    Transforms the raw API response (JSON) into a Pandas DataFrame
-    with the correct schema and column order.
+    Transform the raw API response (JSON) into a Pandas DataFrame.
 
     Args:
         data: The JSON dictionary returned from the 'extract' task.
@@ -111,7 +110,7 @@ def transform(
 @task
 def load(df: pd.DataFrame, logical_date_str: str, base_currency: str):
     """
-    Saves the DataFrame as a Parquet file to GCS with Hive-style partitioning.
+    Save the DataFrame as a Parquet file to GCS with Hive-style partitioning.
 
     This task explicitly fetches GCP credentials from the 'gcp_default'
     Airflow connection to ensure authentication succeeds.
@@ -122,7 +121,6 @@ def load(df: pd.DataFrame, logical_date_str: str, base_currency: str):
         logical_date_str: The logical date used for the 'date' partition.
         base_currency: The base currency used for the 'base_currency' partition.
     """
-
     try:
         gcp_hook = GoogleBaseHook(gcp_conn_id="gcp_default")
         credentials = gcp_hook.get_credentials()
@@ -169,10 +167,9 @@ def load(df: pd.DataFrame, logical_date_str: str, base_currency: str):
 )
 def currency_rates_etl_dag():
     """
-    Currency Rates ETL Pipeline
+    Currency Rates ETL Pipeline.
 
-    This DAG implements an idempotent pipeline to download daily
-    currency exchange rates from the `frankfurter.app` API.
+    This DAG implements an idempotent pipeline to download daily currency exchange.
 
     **Business Logic:**
     - Fetches daily rates based on a `base_currency` (from Airflow Variables).
@@ -182,9 +179,8 @@ def currency_rates_etl_dag():
     **Technical Flow:**
     1.  `extract`: Fetches data from the API (retries 5 times on network failure).
     2.  `transform`: Converts JSON to a clean, ordered Pandas DataFrame.
-    3.  `load`: Explicitly authenticates with `gcp_default` connection and saves the DataFrame to GCS as a Parquet file.
+    3.  `load`: Saves the DataFrame to GCS as a Parquet file.
     """
-
     # '{{ ds }}' airflow macro
     logical_date = "{{ ds }}"
 
