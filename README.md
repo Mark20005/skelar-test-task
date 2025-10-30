@@ -173,7 +173,8 @@ Airflow
 GCS
 ![img_8.png](images/img_8.png)
 .parquet data sample
-        date base_currency currency_code        rate
+```.txt
+         date base_currency currency_code         rate
 0  2025-07-01           USD           AUD      1.51860
 1  2025-07-01           USD           BGN      1.65610
 2  2025-07-01           USD           BRL      5.42890
@@ -204,3 +205,4 @@ GCS
 27 2025-07-01           USD           THB     32.38000
 28 2025-07-01           USD           TRY     39.85400
 29 2025-07-01           USD           ZAR     17.58430
+```
