@@ -1,15 +1,50 @@
-config/
-logs/
-plugins/
-pycache/
-*.pyc
-*.pyo
-*.pyd
-*.env
-.env
-*.db
-*.sqlite3
+# Docker
+.dockerignore
+docker-compose.yaml.override
+docker-compose.override.yaml
 
-!docker-compose.yaml
-!Dockerfile
-!dags/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak
+venv.bak
+
+# Airflow
+logs/
+data/
+*.db
+unittests.cfg
+airflow.cfg
+
+# Secrets
+gcp_key.json
+*.json
+*.credential
+*.credentials
