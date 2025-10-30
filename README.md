@@ -135,8 +135,14 @@ This is a production-ready ETL pipeline built with Apache Airflow 2.x. It extrac
 
 * **Idempotent:** Each DAG run is responsible for only one day (`logical_date`). Rerunning it for a specific day will simply overwrite that day's data.
 * **Resilient:** The `extract` task will retry 5 times on network failures.
-* **Configurable:** Key business logic (base currency, output path) is controlled via Airflow Variables for easy changes without touching code.
+* **Configurable:** Key logic (base currency, output path) is controlled via Airflow Variables for easy changes without touching code.
 * **Data Lake Ready:** The pipeline writes data in a Hive-partitioned structure (`base_currency=USD/date=YYYY-MM-DD/`).
+
+For this pipeline, **I chose to use Airflow's TaskFlow API (`@dag`, `@task`) over the traditional `PythonOperator`** for several key reasons.
+
+1.  **Code Clarity and Readability:** The TaskFlow API allows for writing pipelines as simple, clean Python functions. The flow of data is natural (`json_data = extract(...)`, `df = transform(json_data, ...)`). This makes the DAG's logic immediately obvious, as dependencies are inferred from function calls rather than being explicitly declared with `>>` operators.
+
+2.  **Simplified Data Passing (for small data):** The primary advantage is the automatic handling of data passing via XComs. For this specific task, the data being passed between tasks (a JSON response and a small Pandas DataFrame) is **trivial in size** (a few kilobytes). The huge benefit of clean, functional syntax (`return df` and `def load(df: pd.DataFrame)`) far outweighs the negligible overhead of using XComs for this small-scale data.
 
 ### Pipeline Design Notes
 
